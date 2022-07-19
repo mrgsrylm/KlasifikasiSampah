@@ -1,15 +1,22 @@
 [package]
 name = "rust-rest-api"
 version = "0.1.0"
+authors = ["Agus S. Mubarok <gusrylmubarok@gmail.com>"]
+rust-version = "1.62.0"
 edition = "2021"
+description= "Sample REST API with Rust"
+readme = "README.md"
+repository = "https://github.com/gusrylmubarok/rust-rest-api"
+license = "MIT"
+keywords = ["rest", "api"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-actix = "0.12"
+actix = "0.13.0"
 actix-web = "4"
 diesel = { version = "1.4.4", features = ["postgres"] }
 dotenv = "0.15.0"
-serde = "1.0"
-serde_derive = "1.0"
-serde_json = "1.0"
+serde = "1.0.139"
+serde_derive = "1.0.139"
+serde_json = "1.0.82"

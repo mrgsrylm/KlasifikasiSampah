@@ -1,45 +1,37 @@
-use crate::schema::products;
+pub mod schema;
+pub mod models;
+pub mod db_connection;
+pub mod handlers; // This goes to the top to load the next handlers module 
 
-// This will tell the compiler that the struct will be serialized and 
-// deserialized, we need to install serde to make it work.
-#[derive(Serialize, Deserialize)] 
-pub struct ProductList(pub Vec<Product>);
+#[macro_use]
+extern crate diesel;
+extern crate dotenv;
+extern crate serde;
+extern crate serde_json;
+#[macro_use] 
+extern crate serde_derive;
 
-#[derive(Queryable, Serialize, Deserialize)]
-pub struct Product {
-    pub id: i32,
-    pub name: String,
-    pub stock: f64,
-    pub price: Option<i32> // For a value that can be null, 
-                           // in Rust is an Option type that 
-                           // will be None when the db value is null
-}
+extern crate actix;
+extern crate actix_web;
+extern crate futures;
+use actix_web::{HttpServer, App, web, HttpRequest, HttpResponse};
 
-#[derive(Insertable)]
-#[table_name="products"]
-pub struct NewProduct {
-    pub name: Option<String>,
-    pub stock: Option<f64>,
-    pub price: Option<i32>
-}
+fn main() {
+    // We are creating an Application instance and 
+    // register the request handler with a route and a resource 
+    // that creates a specific path, then the application instance 
+    // can be used with HttpServer to listen for incoming connections.
+    let sys = actix::System::new("mystore");
 
-impl ProductList {
-    pub fn list() -> Self {
-        // These four statements can be placed in the top, or here, your call.
-        use diesel::RunQueryDsl;
-        use diesel::QueryDsl;
-        use crate::schema::products::dsl::*;
-        use crate::db_connection::establish_connection;
+    HttpServer::new(
+    || App::new()
+        .service(
+            web::resource("/products")
+                .route(web::get().to_async(handlers::products::index))
+        ))
+    .bind("127.0.0.1:8088").unwrap()
+    .start();
 
-        let connection = establish_connection();
-
-        let result = 
-            products
-                .limit(10)
-                .load::<Product>(&connection)
-                .expect("Error loading products");
-
-        // We return a value by leaving it without a comma
-        ProductList(result)
-    }
+    println!("Started http server: 127.0.0.1:8088");
+    let _ = sys.run();
 }

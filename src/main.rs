@@ -32,6 +32,6 @@ fn main() {
     .bind("127.0.0.1:8088").unwrap()
     .start();
 
-    println!("Started http server: 127.0.0.1:8088");
+    println!("Started http server: 127.0.0.1:8080");
     let _ = sys.run();
 }
