@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="TextStyle">
+<!--        <item name="android:textAlignment">center</item>-->
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="TextStyle.Head">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextStyle.Sub">
+    </style>
+
+    <style name="TextStyle.Title">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+</resources>

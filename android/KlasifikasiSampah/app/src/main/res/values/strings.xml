@@ -1,0 +1,79 @@
+<resources>
+    <string name="app_name">Klasifikasi Sampah</string>
+
+
+    <string name="cari_kerajinan">Cari Kerajinan</string>
+    <string name="top_crafts">Kerajinan</string>
+    <string name="camera_button_desc">Camera Button</string>
+    <string name="jenis_kategori">Kategori</string>
+    <string name="Camera">Kamera</string>
+    <string name="gallery">Galeri</string>
+    <string name="upload">Unggah</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="login_heading">Login to Your Account</string>
+    <string name="login_subheading">Login to continue your journey</string>
+    <string name="email_hint">Enter Your Email</string>
+    <!-- TODO: Remove or change this placeholder text -->
+
+
+    <string name="descScreen0">Kenali sampahmu dan jenisnya dengan mudah hanya dengan satu sentuhan.</string>
+    <string name="descScreen1">Temukan ide kreatif dari sampahmu dan buatlah kerajinan yang menarik.</string>
+    <string name="descScreen2">Kreasikan idemu sekarang dan hasilkan berbagai kerajinan yang menarik.</string>
+    <string name="titleScreen0">Recylens</string>
+    <string name="titleScreen1">Get Ideas</string>
+    <string name="titleScreen2">Let\'s Craft</string>
+    <string name="next">Next</string>
+    <string name="previous">kembali</string>
+    <string name="skip">lewati</string>
+    <string name="lampion_plastik">Lampion Plastik</string>
+    <string name="bahan_lampion">1 Botol plastik bekas Aqua \n
+4 buah tutup botol plastik bekas \n
+Cat air \n
+Lem tembak \n
+Spidol \n
+Kuas kecil \n Gunting \n
+2 batang sedotan kecil \n
+2 batang sedotan besar</string>
+    <string name="cara_pembuatan">
+        Gunting sedotan besar sekitar 1 cm lebih panjang dari bodi botol. Ukur dan pastikan panjang diameternya 05 di sisi kanan maupun kiri;
+Tempelkan dengan menggunakan lem tembak;
+Tempelkan kedua batang sedotan secara sejajar. Tunggu lem sampai kering dan sedotan merekat pada botol;
+Ambil 4 buah tutup botol plastik;
+Lubangi bagian tengah botol dengan ujung gunting atau benda runcing;
+Buat lubang seukuran dengan sedotan yang sudah dipotong sebelumnya;
+Masukkan sedotan ke dalam lubang mobil dengan lem tembak;
+Lakukan hal tersebut pada seluruh tutup botol plastik;
+Tempelkan kedua kerangka yang telah dilengkapi 4 roda tersebut pada bagian bodi mobil menggunakan lem tembak.
+
+    </string>
+    <string name="pass_hint">Enter Password Here</string>
+    <string name="remember_me">Remember Me</string>
+    <string name="login">Login</string>
+    <string name="prompt_signup">Don\'t have an account?</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="recycraft_logo">RecyCraft Logo</string>
+    <string name="signup_heading">Create Your Account</string>
+    <string name="signup_subheading">Create your account to start exploring</string>
+    <string name="full_name">Full Name</string>
+    <string name="name_hint">Enter Your Full Name</string>
+    <string name="prompt_login">Already have an account?</string>
+    <string name="log_out">Log Out</string>
+    <string name="titleSplash">Recycraft</string>
+    <string name="start">Mulai</string>
+    <string name="hasil_tangkapan_gambar">Hasil tangkapan gambar</string>
+    <string name="show_all">show all</string>
+    <string name="detail">Detail</string>
+    <string name="list_craft">List Craft</string>
+    <string name="identifikasi">Identifikasi</string>
+    <string name="result">Result</string>
+    <string name="gambar_kerajinan">Gambar Kerajinan</string>
+    <string name="alat_dan_bahan">Alat dan Bahan</string>
+    <string name="langkah_pembuatan">Langkah Pembuatan</string>
+
+
+    <string name="home">Home</string>
+    <string name="version">V1.0.0</string>
+    <string name="more_take">Foto Lagi</string>
+</resources>
