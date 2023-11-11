@@ -1,7 +1,8 @@
-botol_kaca
-botol_plastik
-kaleng
-kardus
-kertas
-plastik
-sterefoam
+bottle
+can
+cardboard
+glass
+paper
+plastic
+spoon
+styrofoam

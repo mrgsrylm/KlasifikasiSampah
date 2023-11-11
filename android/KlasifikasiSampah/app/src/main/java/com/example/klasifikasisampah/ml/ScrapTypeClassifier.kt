@@ -60,7 +60,6 @@ class ScrapTypeClassifier(
         return getSortedResult(result)
     }
 
-
     private fun convertBitmapToByteBuffer(bitmap: Bitmap): ByteBuffer {
         val byteBuffer = ByteBuffer.allocateDirect(4 * inputSize * inputSize * pixelSize)
         byteBuffer.order(ByteOrder.nativeOrder())
