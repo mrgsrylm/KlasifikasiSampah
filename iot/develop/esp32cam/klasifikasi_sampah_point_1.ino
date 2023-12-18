@@ -1,57 +1,10 @@
-/* Edge Impulse Arduino examples
- * Copyright (c) 2022 EdgeImpulse Inc.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
-
-/* Includes ---------------------------------------------------------------- */
 #include <klasifikasi-jenis-sampah_inferencing.h>
 #include "edge-impulse-sdk/dsp/image/image.hpp"
-
 #include "esp_camera.h"
 
-// Select camera model - find more camera models in camera_pins.h file here
-// https://github.com/espressif/arduino-esp32/blob/master/libraries/ESP32/examples/Camera/CameraWebServer/camera_pins.h
-
-//#define CAMERA_MODEL_ESP_EYE // Has PSRAM
 #define CAMERA_MODEL_AI_THINKER // Has PSRAM
 
-#if defined(CAMERA_MODEL_ESP_EYE)
-#define PWDN_GPIO_NUM    -1
-#define RESET_GPIO_NUM   -1
-#define XCLK_GPIO_NUM    4
-#define SIOD_GPIO_NUM    18
-#define SIOC_GPIO_NUM    23
-
-#define Y9_GPIO_NUM      36
-#define Y8_GPIO_NUM      37
-#define Y7_GPIO_NUM      38
-#define Y6_GPIO_NUM      39
-#define Y5_GPIO_NUM      35
-#define Y4_GPIO_NUM      14
-#define Y3_GPIO_NUM      13
-#define Y2_GPIO_NUM      34
-#define VSYNC_GPIO_NUM   5
-#define HREF_GPIO_NUM    27
-#define PCLK_GPIO_NUM    25
-
-#elif defined(CAMERA_MODEL_AI_THINKER)
+#if defined(CAMERA_MODEL_AI_THINKER)
 #define PWDN_GPIO_NUM     32
 #define RESET_GPIO_NUM    -1
 #define XCLK_GPIO_NUM      0
@@ -247,10 +200,6 @@ bool ei_camera_init(void) {
 #if defined(CAMERA_MODEL_M5STACK_WIDE)
     s->set_vflip(s, 1);
     s->set_hmirror(s, 1);
-#elif defined(CAMERA_MODEL_ESP_EYE)
-    s->set_vflip(s, 1);
-    s->set_hmirror(s, 1);
-    s->set_awb_gain(s, 1);
 #endif
 
     is_initialised = true;
