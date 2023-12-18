@@ -78,8 +78,7 @@ bool ei_camera_capture(uint32_t img_width, uint32_t img_height, uint8_t *out_buf
 /**
 * @brief      Arduino setup function
 */
-void setup()
-{
+void setup() {
     // put your setup code here, to run once:
     Serial.begin(115200);
     //comment out the below line to start inference immediately after upload
@@ -101,8 +100,7 @@ void setup()
 *
 * @param[in]  debug  Get debug info if true
 */
-void loop()
-{
+void loop() {
 
     // instead of wait_ms, we'll wait on the signal, this allows threads to cancel us...
     if (ei_sleep(5) != EI_IMPULSE_OK) {
@@ -279,8 +277,7 @@ bool ei_camera_capture(uint32_t img_width, uint32_t img_height, uint8_t *out_buf
     return true;
 }
 
-static int ei_camera_get_data(size_t offset, size_t length, float *out_ptr)
-{
+static int ei_camera_get_data(size_t offset, size_t length, float *out_ptr) {
     // we already have a RGB888 buffer, so recalculate offset into pixel index
     size_t pixel_ix = offset * 3;
     size_t pixels_left = length;
