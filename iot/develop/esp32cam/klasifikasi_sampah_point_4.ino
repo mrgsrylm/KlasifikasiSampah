@@ -30,6 +30,8 @@ static bool debug_nn = false;
 static bool is_initialised = false;
 uint8_t *snapshot_buf;  //points to the output of the capture
 
+bool classification = true;
+
 // Function definitions
 bool ei_camera_init(void);
 void ei_camera_deinit(void);
@@ -80,28 +82,32 @@ void setup() {
     ei_printf("INFO: Camera initialized\r\n");
   }
 
-  ei_printf("\nStarting program in 2 seconds...\n");
+  ei_printf("\nStarting program in 3 seconds...\n");
   ei_sleep(2000);
 }
 
 void loop() {
-  // instead of wait_ms, we'll wait on the signal, this allows threads to cancel us...
-  if (ei_sleep(5) != EI_IMPULSE_OK) {
-    return;
+  delay(1000);
+  if (classification == true) {
+    // instead of wait_ms, we'll wait on the signal, this allows threads to cancel us...
+    if (ei_sleep(5) != EI_IMPULSE_OK) {
+      return;
+    }
+
+    snapshot_buf = (uint8_t *)malloc(EI_CAMERA_RAW_FRAME_BUFFER_COLS * EI_CAMERA_RAW_FRAME_BUFFER_ROWS * EI_CAMERA_FRAME_BYTE_SIZE);
+    // check if allocation was successful
+    if (snapshot_buf == nullptr) {
+      ei_printf("ERR: Failed to allocate snapshot buffer!\n");
+      return;
+    }
+
+    // Classify
+    String result = classify(snapshot_buf);
+    Serial.println("Object is " + result);
+
+    free(snapshot_buf);
+    classification = false;
   }
-
-  snapshot_buf = (uint8_t *)malloc(EI_CAMERA_RAW_FRAME_BUFFER_COLS * EI_CAMERA_RAW_FRAME_BUFFER_ROWS * EI_CAMERA_FRAME_BYTE_SIZE);
-  // check if allocation was successful
-  if (snapshot_buf == nullptr) {
-    ei_printf("ERR: Failed to allocate snapshot buffer!\n");
-    return;
-  }
-
-  // Classify
-  String result = classify(snapshot_buf);
-  Serial.println("Object is " + result);
-
-  free(snapshot_buf);
 }
 
 // Setup image sensor & start streaming
@@ -201,12 +207,8 @@ String classify(uint8_t *snapshot_buf) {
 
   EI_IMPULSE_ERROR err = run_classifier(&signal, &result, debug_nn);
   if (err != EI_IMPULSE_OK) {
-    // ei_printf("ERR: Failed to run classifier (%d)\n", err);
     return "ERR: Failed to run classifier";
   }
-
-  // print the predictions
-  // ei_printf("Predictions (DSP: %d ms., Classification: %d ms., Anomaly: %d ms.): \n", result.timing.dsp, result.timing.classification, result.timing.anomaly);
 
   int index;
   float score = 0.0;
