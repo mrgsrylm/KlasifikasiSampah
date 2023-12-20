@@ -2,11 +2,11 @@
 #include <Firebase_ESP_Client.h>
 #include <addons/TokenHelper.h>
 
-#define WIFI_SSID "Carthasisi"
+#define WIFI_SSID "Carthasis"
 #define WIFI_PASSWD "12345678"
 
-#define FB_API_KEY ""
-#define FB_DB_URL ""
+#define FB_API_KEY "AIzaSyADMH3ttL24kftJUf4dsIW43DdNdh9JLu0"
+#define FB_PROJECT_ID "esp32cam-8c824"
 #define FB_EMAIL "esp32cam@test.com"
 #define FB_PASSWD "passwd123"
 
@@ -22,7 +22,8 @@ bool doing = true;
 
 // Functions declaration
 void setupWiFi(void);
-void insertRTDB(String params);
+void setupFirebase(void);
+void insertFirestore(String params);
 
 void setup() {
   Serial.begin(115200);
@@ -32,7 +33,7 @@ void setup() {
 
 void loop() {
   if (doing == true){
-    insertRTDB("Organik");
+    insertFirestore("Organik");
     doing = false;
   }
 }
@@ -48,7 +49,6 @@ void setupWiFi(void) {
 
 void setupFirebase(void) {
   fbconfig.api_key = FB_API_KEY;
-  fbconfig.database_url = FB_DB_URL;
   if (Firebase.signUp(&fbconfig, &fbauth, "", "")){
     signupOK = true;
     Serial.println("INFO: SignUp firebase successfully");
@@ -60,17 +60,21 @@ void setupFirebase(void) {
   Firebase.reconnectWiFi(true);
 } 
 
-void insertRTDB(String params) {
+void insertFirestore(String params) {
   if (Firebase.ready() && (millis() - sendDataPrevMillis > 60000 || sendDataPrevMillis == 0)) {
     sendDataPrevMillis = millis();
+    String documentPath = "(default)/doc_id";
+
     FirebaseJson json;
-    json.set("Hasil", params);
-    json.set("Ts/.sv", "timestamp");
-    
-    if(Firebase.RTDB.set(&fbdo, F("/log/"), &json)) {
+    json.set("fields/result/stringValue", params);
+    time_t date = Firebase.getCurrentTime();
+    json.set("fields/date/stringValue", String(date));
+
+    if(Firebase.Firestore.createDocument(&fbdo, FB_PROJECT_ID, "", documentPath.c_str(), json.raw())) {
       Serial.println("INFO: Write log successfully");
     }else{
       Serial.println("ERR: Write log failed");
     }
   }
 }
+
