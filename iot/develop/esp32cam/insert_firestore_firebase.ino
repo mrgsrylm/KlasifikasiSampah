@@ -5,8 +5,8 @@
 #define WIFI_SSID "Carthasis"
 #define WIFI_PASSWD "12345678"
 
-#define FB_API_KEY "AIzaSyADMH3ttL24kftJUf4dsIW43DdNdh9JLu0"
-#define FB_PROJECT_ID "esp32cam-8c824"
+#define FB_API_KEY ""
+#define FB_PROJECT_ID ""
 #define FB_EMAIL "esp32cam@test.com"
 #define FB_PASSWD "passwd123"
 
