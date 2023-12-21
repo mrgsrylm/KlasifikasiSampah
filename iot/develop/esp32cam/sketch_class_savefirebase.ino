@@ -3,7 +3,6 @@
 #include <Firebase_ESP_Client.h>
 #include <HTTPClient.h>
 #include <addons/TokenHelper.h>
-#include <Base64.h>
 #include "esp_camera.h"
 #include "edge-impulse-sdk/dsp/image/image.hpp"
 #include "soc/soc.h"
@@ -56,7 +55,7 @@ bool ei_camera_init(void);
 void ei_camera_deinit(void);
 bool ei_camera_capture(uint32_t img_width, uint32_t img_height, uint8_t *out_buf);
 void logger_initializer(void);
-void logger_writter(String result, String image);
+void logger_writter(String result);
 
 static camera_config_t camera_config = {
   .pin_pwdn = PWDN_GPIO_NUM,
@@ -176,8 +175,7 @@ void loop() {
   ei_printf("    anomaly score: %.3f\n", result.anomaly);
 #endif
 
-    String base64Image = base64_encode(snapshot_buf, EI_CAMERA_RAW_FRAME_BUFFER_COLS * EI_CAMERA_RAW_FRAME_BUFFER_ROWS * EI_CAMERA_FRAME_BYTE_SIZE);
-    logger_writter(result.classification[index].label, base64Image);
+    logger_writter(result.classification[index].label);
     Serial.println("Object is " + String(result.classification[index].label));
 
     free(snapshot_buf);
@@ -308,7 +306,7 @@ void logger_initializer(void) {
 }
 
 // logger
-void logger_writter(String result, String image) {
+void logger_writter(String result) {
   if (Firebase.ready() && (millis() - sendDataPrevMillis > 60000 || sendDataPrevMillis == 0)) {
     sendDataPrevMillis = millis();
     String documentPath = "logs/(default)/doc_id";
@@ -325,7 +323,7 @@ void logger_writter(String result, String image) {
 
     // TODO parse timeString and save as map on firebase
     FirebaseJson json;
-    json.set("fields/image/stringValue", image);
+    //json.set("fields/image/stringValue", image);
     json.set("fields/result/stringValue", result);
     json.set("fields/classified_at/stringValue", timeString);
 
