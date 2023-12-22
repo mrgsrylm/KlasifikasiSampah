@@ -30,8 +30,8 @@
 // internet, telegram
 #define WIFI_SSID "Carthasis"
 #define WIFI_PASSWD "12345678"
-#define TELE_BOT_TOKEN "6768920803:AAF6GLSiiQM_0ir7BX2hNcHB8DpHVopNzNo"
-#define TELE_CHAT_ID "776569360"
+#define TELE_BOT_TOKEN ""
+#define TELE_CHAT_ID ""
 
 // machine learning, camera variables
 static bool debug_nn = false;
@@ -264,8 +264,8 @@ String ks_classify_image(uint8_t *snapshot_buf) {
 }
 
 void tele_send_photo(camera_fb_t *fb) {
-  String tele_chat_id = "6768920803:AAF6GLSiiQM_0ir7BX2hNcHB8DpHVopNzNo";
-  String tele_bot_token = "776569360";
+  String tele_chat_id = "";
+  String tele_bot_token = "";
   const char* tele_domain = "api.telegram.org";
 
   if (secured_client.connect(tele_domain, 443)) {
