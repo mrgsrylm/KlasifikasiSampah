@@ -1,13 +1,11 @@
-#include <Arduino.h>
-#include <ArduinoJson.h>
-#include <UniversalTelegramBot.h>
-#include <klasifikasi-jenis-sampah_inferencing.h>
-#include <WiFi.h>
-#include <WiFiClientSecure.h>
-#include "edge-impulse-sdk/dsp/image/image.hpp"
 #include "esp_camera.h"
 #include "soc/soc.h"
 #include "soc/rtc_cntl_reg.h"
+#include <WiFi.h>
+#include <WiFiClientSecure.h>
+#include <klasifikasi-jenis-sampah_inferencing.h>
+#include "edge-impulse-sdk/dsp/image/image.hpp"
+#include <UniversalTelegramBot.h>
 
 // camera model_ai_thinker
 #define PWDN_GPIO_NUM 32
@@ -50,7 +48,7 @@ bool ks_camera_init(void);
 void ks_camera_deinit(void);
 bool ks_camera_capture(uint32_t img_width, uint32_t img_height, uint8_t *out_buf);
 String ks_classify_image(uint8_t *snapshot_buf);
-String tele_send_photo();
+void tele_send_photo(camera_fb_t *fb);
 
 static camera_config_t camera_config = {
   .pin_pwdn = PWDN_GPIO_NUM,
@@ -92,53 +90,45 @@ void setup() {
 
   WiFi.begin(WIFI_SSID, WIFI_PASSWD);
   secured_client.setCACert(TELEGRAM_CERTIFICATE_ROOT);  // Add root certificate for api.telegram.org
-  Serial.print("\ninfo: internet connecting\n");
+  Serial.print("info: internet connecting");
   while (WiFi.status() != WL_CONNECTED) {
     Serial.print(".");
   }
 
-  while(ks_camera_init() == false) {
-    ei_printf("error: camera fail initialezed\n");
+  if (ks_camera_init() == false) {
+    ei_printf("\nerror: camera fail initialezed");
   }
 
-  Serial.print("info: program ready\n");
-  delay(1000);
+  Serial.print("\ninfo: program ready");
 }
 
 void loop() {
+  delay(1000);
   if (is_life) {
     bot.sendMessage(TELE_CHAT_ID, "Bang Agus, your ESP32Cam is life!", "");
-    Serial.printf("info: life notify sent\n");
     is_life = false;
-    delay(100);
+    delay(5000);
   }
   if (is_classify == true) {
-    tele_send_photo();
+    // instead of wait_ms, we'll wait on the signal, this allows threads to cancel us...
+    if (ei_sleep(5) != EI_IMPULSE_OK) {
+      return;
+    }
 
-    Serial.printf("info: image has been processed\n");
+    snapshot_buf = (uint8_t *)malloc(EI_CAMERA_RAW_FRAME_BUFFER_COLS * EI_CAMERA_RAW_FRAME_BUFFER_ROWS * EI_CAMERA_FRAME_BYTE_SIZE);
+    // check if allocation was successful
+    if (snapshot_buf == nullptr) {
+      ei_printf("\nerror: failed to allocate snapshot buffer!\n");
+      return;
+    }
+    // Classify
+    String result = ks_classify_image(snapshot_buf);
+    bot.sendMessage(TELE_CHAT_ID, "The image is " + result, "");
+    Serial.println("The image is " + result);
+
+    free(snapshot_buf);
     is_classify = false;
   }
-  // if (is_classify == true) {
-  //   // instead of wait_ms, we'll wait on the signal, this allows threads to cancel us...
-  //   if (ei_sleep(5) != EI_IMPULSE_OK) {
-  //     return;
-  //   }
-
-  //   snapshot_buf = (uint8_t *)malloc(EI_CAMERA_RAW_FRAME_BUFFER_COLS * EI_CAMERA_RAW_FRAME_BUFFER_ROWS * EI_CAMERA_FRAME_BYTE_SIZE);
-  //   // check if allocation was successful
-  //   if (snapshot_buf == nullptr) {
-  //     ei_printf("\nerror: failed to allocate snapshot buffer!\n");
-  //     return;
-  //   }
-  //   // Classify
-  //   String result = ks_classify_image(snapshot_buf);
-  //   bot.sendMessage(TELE_CHAT_ID, "The image is " + result, "");
-  //   Serial.println("The object is " + result);
-
-  //   free(snapshot_buf);
-  //   is_classify = false;
-  // }
-  delay(1000);
 }
 
 // image sensor up
@@ -147,7 +137,7 @@ bool ks_camera_init(void) {
 
   esp_err_t err = esp_camera_init(&camera_config);
   if (err != ESP_OK) {
-    Serial.printf("error: camera init failed with error 0x%x\n", err);
+    Serial.printf("\error: camera init failed with error 0x%x", err);
     return false;
   }
 
@@ -158,7 +148,6 @@ bool ks_camera_init(void) {
     s->set_saturation(s, 0);  // lower the saturation
   }
 
-  Serial.printf("info: camera ready\n");
   is_initialized = true;
   return true;
 }
@@ -167,11 +156,10 @@ bool ks_camera_init(void) {
 void ks_camera_deinit(void) {
   esp_err_t err = esp_camera_deinit();
   if (err != ESP_OK) {
-    ei_printf("error: camera deinit failed\n");
+    ei_printf("\nerror: camera deinit failed\n");
     return;
   }
 
-  Serial.printf("info: camera deinit\n");
   is_initialized = false;
   return;
 }
@@ -180,20 +168,22 @@ void ks_camera_deinit(void) {
 bool ks_camera_capture(uint32_t img_width, uint32_t img_height, uint8_t *out_buf) {
   bool do_resize = false;
   if (!is_initialized) {
-    ei_printf("error: camera is not initialized\n");
+    ei_printf("\nerror: camera is not initialized\r");
     return false;
   }
 
   camera_fb_t *fb = esp_camera_fb_get();
   if (!fb) {
-    ei_printf("\error: camera capture failed\n");
+    ei_printf("\nerror: camera capture failed\n");
     return false;
   }
+
+  tele_send_photo(fb);
 
   bool converted = fmt2rgb888(fb->buf, fb->len, PIXFORMAT_JPEG, snapshot_buf);
   esp_camera_fb_return(fb);
   if (!converted) {
-    ei_printf("error: conversion failed\n");
+    ei_printf("\nerror: conversion failed\n");
     return false;
   }
 
@@ -244,7 +234,7 @@ String ks_classify_image(uint8_t *snapshot_buf) {
     if (bb.value == 0) {
       continue;
     }
-    // ei_printf("\n    %s (%f) [ x: %u, y: %u, width: %u, height: %u ]\n", bb.label, bb.value, bb.x, bb.y, bb.width, bb.height);
+    ei_printf("    %s (%f) [ x: %u, y: %u, width: %u, height: %u ]\n", bb.label, bb.value, bb.x, bb.y, bb.width, bb.height);
 
     // record the most possible label
     if (bb.value > score) {
@@ -262,7 +252,7 @@ String ks_classify_image(uint8_t *snapshot_buf) {
       score = result.classification[ix].value;
       index = ix;
     }
-    // ei_printf("\n    %s: %.5f\n", result.classification[ix].label, result.classification[ix].value);
+    ei_printf("    %s: %.5f\n", result.classification[ix].label, result.classification[ix].value);
   }
 #endif
 
@@ -273,32 +263,13 @@ String ks_classify_image(uint8_t *snapshot_buf) {
   return String(result.classification[index].label);  // return the most possible label
 }
 
-String tele_send_photo() {
-  String tele_bot_token = "6768920803:AAF6GLSiiQM_0ir7BX2hNcHB8DpHVopNzNo";
-  String tele_chat_id = "776569360";
-  const char* myDomain = "api.telegram.org";
-  String getAll = "";
-  String getBody = "";
+void tele_send_photo(camera_fb_t *fb) {
+  String tele_chat_id = "6768920803:AAF6GLSiiQM_0ir7BX2hNcHB8DpHVopNzNo";
+  String tele_bot_token = "776569360";
+  const char* tele_domain = "api.telegram.org";
 
-  //Dispose first picture because of bad quality
-  camera_fb_t* fb = NULL;
-  fb = esp_camera_fb_get();
-  esp_camera_fb_return(fb);  // dispose the buffered image
-
-  // Take a new photo
-  fb = NULL;
-  fb = esp_camera_fb_get();
-  if (!fb) {
-    Serial.printf("\ninfo: camera capture failed");
-    delay(1000);
-    ESP.restart();
-    return "camera capture failed";
-  }
-
-  Serial.printf("info: connect to %s\n",String(myDomain));
-
-  if (secured_client.connect(myDomain, 443)) {
-    Serial.println("info: connection successfully");
+  if (secured_client.connect(tele_domain, 443)) {
+    Serial.printf("\ninfo: connection successfully");
     String head = "--PhotoBotESP32Cam\r\nContent-Disposition: form-data; name=\"chat_id\"; \r\n\r\n" + tele_chat_id + "\r\n--PhotoBotESP32Cam\r\nContent-Disposition: form-data; name=\"photo\"; filename=\"esp32-cam.jpg\"\r\nContent-Type: image/jpeg\r\n\r\n";
     String tail = "\r\n--PhotoBotESP32Cam--\r\n";
 
@@ -307,7 +278,7 @@ String tele_send_photo() {
     size_t totalLen = imageLen + extraLen;
 
     secured_client.println("POST /bot" + tele_bot_token + "/sendPhoto HTTP/1.1");
-    secured_client.println("Host: " + String(myDomain));
+    secured_client.println("Host: " + String(tele_domain));
     secured_client.println("Content-Length: " + String(totalLen));
     secured_client.println("Content-Type: multipart/form-data; boundary=PhotoBotESP32Cam");
     secured_client.println();
@@ -326,35 +297,8 @@ String tele_send_photo() {
     }
 
     secured_client.print(tail);
-
-    esp_camera_fb_return(fb);
-
-    int waitTime = 10000;  // timeout 10 seconds
-    long startTimer = millis();
-    boolean state = false;
-
-    while ((startTimer + waitTime) > millis()) {
-      Serial.print(".");
-      delay(100);
-      while (secured_client.available()) {
-        char c = secured_client.read();
-        if (state == true) getBody += String(c);
-        if (c == '\n') {
-          if (getAll.length() == 0) state = true;
-          getAll = "";
-        } else if (c != '\r')
-          getAll += String(c);
-        startTimer = millis();
-      }
-      if (getBody.length() > 0) break;
-    }
     secured_client.stop();
-    Serial.println(getBody);
-  } else {
-    getBody = "connected to api.telegram.org failed.";
-    Serial.print("error: connected to api.telegram.org failed.\n");
   }
-  return getBody;
 }
 
 // retrieve RGB image data from buffer and store in float array
@@ -375,4 +319,3 @@ static int ei_camera_get_data(size_t offset, size_t length, float *out_ptr) {
   // and done!
   return 0;
 }
-
