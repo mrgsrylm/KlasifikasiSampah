@@ -5,9 +5,10 @@ class DatetimeConverters {
   factory DatetimeConverters() => constants;
   DatetimeConverters._();
   String convertToAsiaJakarta(int unixTimestampMillis) {
-    DateTime dateTimeMillis = DateTime.fromMillisecondsSinceEpoch(unixTimestampMillis);    
-    String result = DateFormat.yMd().add_Hms().format(dateTimeMillis.toLocal());
 
+    DateTime dateTimeMillis = DateTime.fromMillisecondsSinceEpoch(unixTimestampMillis * 1000);
+    DateTime jakartaTime = dateTimeMillis.toUtc().add(const Duration(hours: 7));
+    String result = DateFormat.EEEE().addPattern(', dd-MM-yyyy').add_Hms().format(jakartaTime);
     return result;
   }
 }
