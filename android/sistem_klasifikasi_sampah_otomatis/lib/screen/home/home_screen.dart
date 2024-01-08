@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sistem_klasifikasi_sampah_otomatis/routes.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -24,7 +25,16 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: SizedBox(height: 100),
+      body: Column(
+        children: [
+          SizedBox(height: 100),
+          TextButton(
+              onPressed: () {
+                Navigator.pushNamed(context, Routes.history);
+              },
+              child: Text("Go to history"))
+        ],
+      ),
     );
   }
   
