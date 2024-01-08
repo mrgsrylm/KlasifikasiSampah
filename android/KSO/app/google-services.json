@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "457981525061",
+    "project_id": "skoapp-6c275",
+    "storage_bucket": "skoapp-6c275.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:457981525061:android:0ce668a2cfc774074e772c",
+        "android_client_info": {
+          "package_name": "io.github.mrgsrylm.sko"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9n9C4lW3Wvcf4AwtBfEIbdLPCYkW2KCI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
