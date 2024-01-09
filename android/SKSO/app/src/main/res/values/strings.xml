@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">SKSO</string>
+    <string name="app_desc">Sistem Klasifikasi Sampah Otomatis</string>
+    <string name="app_version">Version 1.0.0</string>
+
+    <string name="splash">Splash</string>
+
+    <string name="home">Home</string>
+    <string name="waste_counter">Jumlah Sampah Hari Ini</string>
+    <string name="organik">Organik</string>
+    <string name="anorganik">Anorganik</string>
+
+    <string name="log">Log</string>
+    <string name="log_date">Tanggal</string>
+    <string name="log_time">Waktu</string>
+    <string name="log_waste">Sampah</string>
+
+    <string name="notification">Notification</string>
+
+    <string name="no_internet">No Internet</string>
+    <string name="no_internet_desc">Please check your phone connectivity</string>
+    <string name="retry">Retry</string>
+
+    <string name="location">Location</string>
+    <string name="logo_kuningan">Kabupaten Kuningan</string>
+</resources>
