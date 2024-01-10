@@ -11,20 +11,22 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.navigation.compose.rememberNavController
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavBackStackEntry
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import dagger.hilt.android.AndroidEntryPoint
 import io.github.mrsrylm.skso.ui.component.OfflineDialog
+import io.github.mrsrylm.skso.ui.navigation.AppBottomNavBar
+import io.github.mrsrylm.skso.ui.navigation.AppNavHost
 import io.github.mrsrylm.skso.ui.navigation.AppSplash
 import io.github.mrsrylm.skso.ui.state.AppState
 import io.github.mrsrylm.skso.ui.state.rememberAppState
 import io.github.mrsrylm.skso.ui.theme.SKSOTheme
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import io.github.mrsrylm.skso.ui.navigation.AppBottomNavBar
-import io.github.mrsrylm.skso.ui.navigation.AppNavHost
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +52,7 @@ fun App(
     ) {
         if (!appState.onlineStatus) {
             OfflineDialog(onRetry = appState::refreshOnline)
-        }else{
+        } else {
             val navController = rememberNavController()
             val bottomBarState = rememberSaveable { (mutableStateOf(false)) }
             val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -86,4 +88,5 @@ fun App(
  *
  * This is used to de-duplicate navigation events.
  */
-private fun NavBackStackEntry.lifecycleIsResumed() = this.lifecycle.currentState == Lifecycle.State.RESUMED
+private fun NavBackStackEntry.lifecycleIsResumed() =
+    this.lifecycle.currentState == Lifecycle.State.RESUMED

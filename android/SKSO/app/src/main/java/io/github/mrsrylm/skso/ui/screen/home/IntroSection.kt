@@ -66,6 +66,6 @@ fun IntroSection() {
 @Composable
 fun IntroSectionPreview() {
     SKSOTheme {
-       IntroSection()
+        IntroSection()
     }
 }
