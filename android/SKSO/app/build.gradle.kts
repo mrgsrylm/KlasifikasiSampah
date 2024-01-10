@@ -3,14 +3,15 @@ plugins {
     id("org.jetbrains.kotlin.android")
     kotlin("kapt")
     id("dagger.hilt.android.plugin")
+    id("com.google.gms.google-services")
 }
 
 android {
-    namespace = "io.github.mrsrylm.skso"
+    namespace = "io.github.mrgsrylm.skso"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "io.github.mrsrylm.skso"
+        applicationId = "io.github.mrgsrylm.skso"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
@@ -101,4 +102,9 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion")
     implementation("androidx.compose.runtime:runtime-livedata:1.5.4")
 
+    // firebase
+    implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-auth-ktx:22.3.0")
+    implementation("com.google.firebase:firebase-firestore-ktx:24.10.0")
 }

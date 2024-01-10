@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "702253284819",
+    "firebase_url": "https://esp32cam-8c824-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "esp32cam-8c824",
+    "storage_bucket": "esp32cam-8c824.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:702253284819:android:815e4661fe083d34da0326",
+        "android_client_info": {
+          "package_name": "io.github.mrgsrylm.skso"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBIyYW-i_pLKVSGyoN7bPVqnPmXAUFMVDw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
